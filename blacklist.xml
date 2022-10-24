@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd" _ver="VM-60114">
+
+
+    <!-- Check if the Calling number is listed in the Blacklisted Numbers Dir -->
+    <function define="CheckStatus">
+
+        <!-- Checks if File with some content is present -->
+        <store-cookie root="" name="DISABLED" out="$discontent" />
+        <if cond="$discontent">
+            <!-- Blacklist disabled -->
+            <assign out="$isdisabled" value="true"/>
+        </if>
+        <else>
+            <!-- Blacklist active -->
+            <assign out="$isdisabled" value="false"/>
+        </else>
+    </function>
+
+
+    <!-- Check if the Calling number is listed in the Blacklisted Numbers Dir -->
+    <function define="CheckBL">
+        <!-- Gets Call information -->
+        <pbx-getcallinfo out-cgpn="$cgpn" out-cdpn="$cdpn" out-leg2="$leg2" />
+        <index out="$number" value="$cgpn" pos="1"/>
+
+        <!-- Checks if File with some content is present -->
+        <store-cookie root="$subfoldername" name="$number" out="$content" />
+        <if cond="$content">
+            <!-- Blacklisted -->
+            <assign out="$destination" value="$blacklisted"/>
+        </if>
+        <else>
+            <!-- Legit -->
+            <assign out="$destination" value="$legit"/>
+        </else>
+    </function>
+
+
+    <!-- =========================== MAIN ROUTINE ========================== -->
+    <function define="Main">
+        <!-- Configuration -->
+        <assign out="$legit" value="651"/>
+        <assign out="$blacklisted" value="650"/>
+        <assign out="$subfoldername" value="numbers"/>
+
+        <!-- Checks if the the Blacklist has to be disabled -->
+        <call name="CheckStatus"/>
+
+        <!-- Disabled the Blacklist -->
+        <if notcond="$isdisabled">
+            <!-- Checks if the Number is Blacklisted and sets the destination -->
+            <call name="CheckBL"/>
+        </if>
+        <else>
+            <!-- Sends the Call to the default Legit destination if BL is disabled -->
+            <assign out="$destination" value="$legit"/>
+        </else>
+
+        <!-- Forwards the Call to the selected destination -->
+        <pbx-fwd e164="$destination"/>
+    </function>
+</voicemail>
