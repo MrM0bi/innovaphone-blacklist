@@ -10,7 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Titillium+Web&display=swap" rel="stylesheet">
 
-    <link href="style.css" rel="stylesheet">
+    <?php
+        // Config
+        $GLOBALS["foldername"] = "numbers";
+    ?>
 
     <style>
         body {
@@ -172,8 +175,8 @@
 
         // Create a BL-Number File if the folder exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
-            if(is_dir("numbers")){
-                $myfile = fopen("numbers/".$number, "w") or die("Unable to create BL-File \"$number\"!");
+            if(is_dir($GLOBALS["foldername"])){
+                $myfile = fopen($GLOBALS["foldername"]."/".$number, "w") or die("Unable to create BL-File \"$number\"!");
                 fwrite($myfile, "BL\n");
                 fclose($myfile);
             }
@@ -192,8 +195,8 @@
 
         // Remove BL Number from folder if it exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
-            if(file_exists("numbers/".$number)){
-                $deletefile = unlink("numbers/".$number) or die("Unable to delete BL-File \"$number\"!");
+            if(file_exists($GLOBALS["foldername"]."/".$number)){
+                $deletefile = unlink($GLOBALS["foldername"]."/".$number) or die("Unable to delete BL-File \"$number\"!");
             }else{
                 $error = "[ERROR] This number is not Blacklisted";
             }
@@ -271,7 +274,7 @@
             <td colspan="2">
                 <?php
                 // Get all Blacklsited Numbers
-                $blnums = glob("numbers/*");
+                $blnums = glob($GLOBALS["foldername"]."/*");
 
                 echo "<p id=\"itemcount\">".Count($blnums)." blacklisted numbers</p>";
 
