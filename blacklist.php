@@ -75,7 +75,7 @@
             touch-action: manipulation;
             width: 100%;
         }
-        
+
         .btn:hover,
         .btn:focus {
             opacity: .75;
@@ -153,7 +153,7 @@
     function toggleBL() {
         if( file_exists("DISABLED") ) {
             // Delete File
-            $deletefile = unlink("DISABLED") or die("Unable to delete DISABLED file!"); 
+            $deletefile = unlink("DISABLED") or die("Unable to delete DISABLED file!");
         } else{
             // Create File
             $myfile = fopen("DISABLED", "w") or die("Unable to create DISABLED file!");
@@ -166,7 +166,7 @@
 
 
     function newBLnum($number) {
-        
+
         //Remove Spaces first
         $number = preg_replace('/\s+/', '', $number);
 
@@ -193,7 +193,7 @@
         // Remove BL Number from folder if it exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
             if(file_exists("numbers/".$number)){
-                $deletefile = unlink("numbers/".$number) or die("Unable to delete BL-File \"$number\"!"); 
+                $deletefile = unlink("numbers/".$number) or die("Unable to delete BL-File \"$number\"!");
             }else{
                 $error = "[ERROR] This number is not Blacklisted";
             }
@@ -214,11 +214,11 @@
                 <input id="reloadbtn" class="btn" type="button" onclick="reload()" value="Reload">
             </td>
             <td rowspan="2">
-                <?php 
+                <?php
                 if( file_exists("DISABLED") ) {
-                    echo("<p id=\"blinactive\" class=\"blstatus\">Blacklist deaktiviert</p>");
+                    echo("<p id=\"blinactive\" class=\"blstatus\">Blacklist inactive</p>");
                 } else {
-                    echo("<p id=\"blactive\" class=\"blstatus\">Blacklist aktiviert</p>");
+                    echo("<p id=\"blactive\" class=\"blstatus\">Blacklist active</p>");
                 }
                 ?>
             </td>
@@ -259,7 +259,7 @@
                             </td>
                         </tr>
                     </table>
-                </form>            
+                </form>
             </td>
         </tr>
         <?php
@@ -269,12 +269,12 @@
         ?>
         <tr>
             <td colspan="2">
-                <?php 
-                // Get all Blacklsited Numbers 
+                <?php
+                // Get all Blacklsited Numbers
                 $blnums = glob("numbers/*");
 
                 echo "<p id=\"itemcount\">".Count($blnums)." blacklisted numbers</p>";
-                
+
                 echo "<table id=\"numout\">";
 
                 // Print each Numer
@@ -286,8 +286,8 @@
                 ?>
             </td>
         </tr>
-    </table> 
-    
-    
+    </table>
+
+
 </body>
 </html>
