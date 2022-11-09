@@ -181,7 +181,7 @@
                 fclose($myfile);
             }
         }else{
-            $error = "[ERROR] The input must only consist of numbers and can optionally start with a \"+\"";
+            $error = "[ERROR] Die Eingabe darf nur aus Zahlen bestehen und darf optional mit einem \"+\" beginnen";
         }
 
         return $error;
@@ -198,10 +198,10 @@
             if(file_exists($GLOBALS["foldername"]."/".$number)){
                 $deletefile = unlink($GLOBALS["foldername"]."/".$number) or die("Unable to delete BL-File \"$number\"!");
             }else{
-                $error = "[ERROR] This number is not Blacklisted";
+                $error = "[ERROR] Diese Nummer ist nicht in der Blacklist vorhanden";
             }
         }else{
-            $error = "[ERROR] The input must only consist of numbers and can optionally start with a \"+\"";
+            $error = "[ERROR] Die Eingabe darf nur aus Zahlen bestehen und darf optional mit einem \"+\" beginnen";
         }
 
         return $error;
@@ -214,14 +214,14 @@
     <table>
         <tr>
             <td>
-                <input id="reloadbtn" class="btn" type="button" onclick="reload()" value="Reload">
+                <input id="reloadbtn" class="btn" type="button" onclick="reload()" value="Neu laden">
             </td>
             <td rowspan="2">
                 <?php
                 if( file_exists("DISABLED") ) {
-                    echo("<p id=\"blinactive\" class=\"blstatus\">Blacklist inactive</p>");
+                    echo("<p id=\"blinactive\" class=\"blstatus\">Blacklist inaktiv</p>");
                 } else {
-                    echo("<p id=\"blactive\" class=\"blstatus\">Blacklist active</p>");
+                    echo("<p id=\"blactive\" class=\"blstatus\">Blacklist aktiv</p>");
                 }
                 ?>
             </td>
@@ -229,13 +229,13 @@
         <tr>
             <td>
                 <form method="get">
-                    <input id="toggle" class="btn" type="submit" name="togglebl" class="button" value="Toggle Blacklist" />
+                    <input id="toggle" class="btn" type="submit" name="togglebl" class="button" value="Blacklist umschalten" />
                 </form>
             </td>
         </tr>
         <tr>
             <td>
-                <h3>Add to Blacklist</h3>
+                <h3>Zur Blacklist hinzufügen</h3>
                 <form method="get">
                     <table>
                         <tr>
@@ -250,7 +250,7 @@
                 </form>
             </td>
             <td>
-                <h3>Remove from Blacklist</h3>
+                <h3>Von Blacklist entfernen</h3>
                 <form method="get">
                     <table>
                         <tr>
@@ -276,7 +276,7 @@
                 // Get all Blacklsited Numbers
                 $blnums = glob($GLOBALS["foldername"]."/*");
 
-                echo "<p id=\"itemcount\">".Count($blnums)." blacklisted numbers</p>";
+                echo "<p id=\"itemcount\">".Count($blnums)." blockierte Nummern</p>";
 
                 echo "<table id=\"numout\">";
 
