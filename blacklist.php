@@ -67,6 +67,7 @@
             font-size: 16px;
             font-weight: 700;
             line-height: 1.5;
+            vertical-align: middle;
             margin: 0;
             max-width: none;
             min-height: 44px;
@@ -80,7 +81,7 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            width: 100%;
+            /* width: 100%; */
         }
 
         .btn:hover,
@@ -98,6 +99,7 @@
             font-size: 20px;
             font-weight: 500;
             line-height: 1.5;
+            vertical-align: middle;
             margin: 0;
             max-width: none;
             min-height: 44px;
@@ -111,19 +113,50 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation;
-            width: 100%;
+            /* width: 100%; */
         }
 
         .inset {
             padding-left: 2vw;
         }
 
+        .flexcontainer{
+            display: flex;
+            flex-flow: row wrap;
+        }
+
+        #reloadbtn, #toggle{
+            width: 100%
+        }
+
+        #addbltxt, #addbldesc, #addblbtn{
+            margin-bottom: 5px;
+        }
+
+        #tableinput{
+            width: 100%;
+        }
+
+        #addbltxt{
+            width:20vw;
+            min-width:200px;
+        }
+
+        #addbldesc{
+            width:65vw;
+            min-width:550px;
+        }
+
+        #addblbtn{
+            min-width:100px;
+        }
+
         #blactive {
-            background-color: #319737
+            background-color: #319737;
         }
 
         #blinactive {
-            background-color: #e83b3b
+            background-color: #e83b3b;
         }
 
         #error {
@@ -236,7 +269,7 @@
 
     ?>
 
-
+    <h2>Innovaphone Blacklist</h2>
 
     <table>
         <tr>
@@ -264,19 +297,11 @@
             <td colspan="2">
                 <h3>Zur Blacklist hinzufügen</h3>
                 <form method="get">
-                    <table>
-                        <tr>
-                            <td>
-                                <input id="addbltxt" class="txt" type="text" name="newblnumber" placeholder="Nummer"/>
-                            </td>
-                            <td>
-                                <input id="addbldesc" class="txt" type="text" name="newbldesc" placeholder="Beschreibung"/>
-                            </td>
-                            <td>
-                                <input id="addblbtn" class="btn" type="submit" name="newbl" value="Add" />
-                            </td>
-                        </tr>
-                    </table>
+                    <div id="container" class="parent">
+                        <input id="addbltxt" class="txt" type="text" name="newblnumber" placeholder="Nummer"/>
+                        <input id="addbldesc" class="txt" type="text" name="newbldesc" placeholder="Beschreibung"/>
+                        <input id="addblbtn" class="btn" type="submit" name="newbl" value="Hinzufügen" />
+                    </div>
                 </form>
             </td>
         </tr>
