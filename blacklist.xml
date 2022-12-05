@@ -2,7 +2,7 @@
 <voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd" _ver="VM-60114">
 
 
-    <!-- Check if the Calling number is listed in the Blacklisted Numbers Dir -->
+    <!-- Check if the DISABLED File is present -->
     <function define="CheckStatus">
 
         <!-- Checks if File with some content is present -->
@@ -24,15 +24,29 @@
         <pbx-getcallinfo out-cgpn="$cgpn" out-cdpn="$cdpn" out-leg2="$leg2" />
         <index out="$number" value="$cgpn" pos="1"/>
 
-        <!-- Checks if File with some content is present -->
-        <store-cookie root="$subfoldername" name="$number" out="$content" />
-        <if cond="$content">
-            <!-- Blacklisted -->
+        <!-- Blocks anonymous calls -->
+        <if notcond="$cgpn">
+            <!-- Call is anonymous and gets Blacklisted -->
             <assign out="$destination" value="$blacklisted"/>
         </if>
         <else>
-            <!-- Legit -->
-            <assign out="$destination" value="$legit"/>
+            <switch var="$cgpn">
+                <case equal="0">
+                    <!-- Call is anonymous and gets Blacklisted -->
+                    <assign out="$destination" value="$blacklisted"/>
+                </case>
+            </switch>
+
+            <!-- Checks if File with some content is present -->
+            <store-cookie root="$subfoldername" name="$number" out="$content" />
+            <if cond="$content">
+                <!-- Blacklisted -->
+                <assign out="$destination" value="$blacklisted"/>
+            </if>
+            <else>
+                <!-- Legit -->
+                <assign out="$destination" value="$legit"/>
+            </else>
         </else>
     </function>
 
