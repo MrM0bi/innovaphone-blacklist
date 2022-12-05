@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Blacklist Admin</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/favicon.ico">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -201,12 +205,20 @@
     function toggleBL() {
         if( file_exists("DISABLED") ) {
             // Delete File
-            $deletefile = unlink("DISABLED") or die("Unable to delete DISABLED file!");
+            $deletefile = unlink("DISABLED");
+
+            if(file_exists("DISABLED")){
+                $error = "[ERROR] Umschalten der blacklist fehlgeschlagen.";
+            }
         } else{
             // Create File
-            $myfile = fopen("DISABLED", "w") or die("Unable to create DISABLED file!");
+            $myfile = fopen("DISABLED", "w");
             fwrite($myfile, "If this file exists the BL is disabled\n");
             fclose($myfile);
+
+            if(!file_exists("DISABLED")){
+                $error = "[ERROR] Umschalten der blacklist fehlgeschlagen.";
+            }
         }
 
         return $error;
@@ -227,7 +239,7 @@
         // Create a BL-Number File if the folder exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
             if(is_dir($GLOBALS["foldername"])){
-                $myfile = fopen($GLOBALS["foldername"]."/".$number, "w") or die("Unable to create BL-File \"$number\"!");
+                $myfile = fopen($GLOBALS["foldername"]."/".$number, "w");
                 fwrite($myfile, $description);
                 fclose($myfile);
             }
@@ -247,7 +259,11 @@
         // Remove BL Number from folder if it exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
             if(file_exists($GLOBALS["foldername"]."/".$number)){
-                $deletefile = unlink($GLOBALS["foldername"]."/".$number) or die("Unable to delete BL-File \"$number\"!");
+                $deletefile = unlink($GLOBALS["foldername"]."/".$number);
+
+                if(file_exists($GLOBALS["foldername"]."/".$number)){
+                    $error = "[ERROR] Diese Nummer konnte nicht gelöscht werden";
+                }
             }else{
                 $error = "[ERROR] Diese Nummer ist nicht in der Blacklist vorhanden";
             }
@@ -289,7 +305,7 @@
         <tr>
             <td>
                 <form method="get">
-                    <input id="toggle" class="btn" type="submit" name="togglebl" class="button" value="Blacklist umschalten" />
+                    <input id="toggle" class="btn" type="submit" name="togglebl" class="button" value="Blacklist umschalten"/>
                 </form>
             </td>
         </tr>
@@ -300,7 +316,7 @@
                     <div id="container" class="parent">
                         <input id="addbltxt" class="txt" type="text" name="newblnumber" placeholder="Nummer"/>
                         <input id="addbldesc" class="txt" type="text" name="newbldesc" placeholder="Beschreibung"/>
-                        <input id="addblbtn" class="btn" type="submit" name="newbl" value="Hinzufügen" />
+                        <input id="addblbtn" class="btn" type="submit" name="newbl" value="Hinzufügen"/>
                     </div>
                 </form>
             </td>
