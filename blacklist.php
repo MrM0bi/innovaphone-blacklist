@@ -239,9 +239,15 @@
         // Create a BL-Number File if the folder exists and the input is valid
         if(preg_match('/^\+*(\d|\s)+$/', $number)){
             if(is_dir($GLOBALS["foldername"])){
-                $myfile = fopen($GLOBALS["foldername"]."/".$number, "w");
-                fwrite($myfile, $description);
-                fclose($myfile);
+
+                // Check if file already existas and display a Warning
+                if(file_exists($GLOBALS["foldername"]."/".$number)){
+                    $error = "[Warnung] Diese Nummer ist bereits blockiert. Operation abgebrochen.";
+                }else{
+                    $myfile = fopen($GLOBALS["foldername"]."/".$number, "w");
+                    fwrite($myfile, $description);
+                    fclose($myfile);
+                }
             }
         }else{
             $error = "[ERROR] Die Eingabe darf nur aus Zahlen bestehen und darf optional mit einem \"+\" beginnen";
