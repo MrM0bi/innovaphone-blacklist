@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <voicemail xmlns="http://www.innovaphone.com/xsd/voicemail6.xsd" _ver="VM-60114">
-
+	<!--Innovaphone Voicemail Documentation: https://www.innovaphone.com/xsd/vm.htm -->
 
     <!-- Check if the DISABLED File is present -->
     <function define="CheckStatus">
@@ -72,6 +72,6 @@
         </else>
 
         <!-- Forwards the Call to the selected destination -->
-        <pbx-fwd e164="$destination"/>
+        <pbx-xfer e164="$destination"/>
     </function>
 </voicemail>
