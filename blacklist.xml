@@ -54,7 +54,7 @@
     <!-- =========================== MAIN ROUTINE ========================== -->
     <function define="Main">
         <!-- Configuration -->
-        <assign out="$legit" value="651"/>
+        <assign out="$legit" value="600"/>
         <assign out="$blacklisted" value="650"/>
         <assign out="$subfoldername" value="numbers"/>
 
@@ -72,6 +72,6 @@
         </else>
 
         <!-- Forwards the Call to the selected destination -->
-        <pbx-fwd e164="$destination"/>
+        <pbx-xfer e164="$destination"/>
     </function>
 </voicemail>
