@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Blacklist Admin</title>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
@@ -132,7 +132,7 @@
             display: flex;
             flex-flow: row wrap;
         }
-        
+
 
         #reloadbtn, #toggle{
             width: 100%
@@ -141,7 +141,7 @@
         #addbltxt, #addbldesc, #addblbtn{
             margin-bottom: 5px;
         }
-        
+
         #tabletitle{
             width: 100%;
         }
@@ -154,7 +154,7 @@
             width: 25%;
             vertical-align: top;
         }
-        
+
         #loglink{
             float: right;
             top: 0px;
@@ -220,6 +220,7 @@
 
 
     <?php
+    $error = "";
     if(array_key_exists('togglebl', $_GET)) {
         $error = toggleBL();
     }else if(array_key_exists('newbl', $_GET)) {
@@ -232,7 +233,7 @@
     if(!file_exists($GLOBALS["logsfolder"])){
         mkdir($GLOBALS["logsfolder"], 0755);
     }
-    
+
     if(!file_exists($GLOBALS["logsfolder"]."/latest.log")){
         $disablefile = fopen($GLOBALS["logsfolder"]."/latest.log", "w");
         fwrite($disablefile, "");
@@ -258,6 +259,7 @@
 
     // Toggles the Blacklist
     function toggleBL() {
+        $error = "";
         if( file_exists("DISABLED") ) {
             // Delete File
             $deletefile = unlink("DISABLED");
@@ -295,7 +297,7 @@
         // Remove Spaces first
         $number = preg_replace('/\s+/', '', $number);
         $description = trim($description);
-        
+
         // Sets a description if none is present
         if(strlen($description) == 0){
             $description = "BL";
@@ -324,6 +326,8 @@
 
     function delBLnum($number) {
 
+        $error = "";
+
         // Remove Spaces first
         $number = preg_replace('/\s+/', '', $number);
 
@@ -347,17 +351,17 @@
 
     function getURL($file) {
         if (!empty($file)){
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
                 $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;
-            else  
-                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;   
+            else
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;
         }else{
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
                 $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
-            else  
-                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);   
+            else
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
         }
-            
+
         return $url;
     }
 
@@ -423,7 +427,7 @@
 
                 // Sort by creation date
                 array_multisort(array_map('filectime', $blnums), SORT_NUMERIC, SORT_DESC, $blnums);
-                
+
                 // Print file count
                 echo "<p id=\"itemcount\">".Count($blnums)." blockierte Nummern</p>";
 
@@ -439,14 +443,14 @@
                     if (file_exists($num)) {
                         $date = date("d.m.Y", filectime($num));
                     }
-                    
+
                     // Read the File content
                     $f = fopen($num, 'r');
                     if ($f) {
                         $contents = fread($f, filesize($num));
                         fclose($f);
                     }
-                    
+
                     // Check if file has content otherwise warn use
                     if(strlen(trim($contents)) != 0){
                         if(trim($contents) == "BL"){
@@ -455,7 +459,7 @@
                         ?>
                         <tr>
                             <td>
-                                <a title="Nummer löschen" onclick="return confirm('Nummer <?php echo substr($num, 8); ?> löschen?');" href="<?php echo getURL(); ?>?delblnumber=<?php echo substr($num, 8); ?>&delbl=Remove">
+                                <a title="Nummer löschen" onclick="return confirm('Nummer <?php echo substr($num, 8); ?> löschen?');" href="<?php echo getURL(""); ?>?delblnumber=<?php echo substr($num, 8); ?>&delbl=Remove">
                                     <svg id="del" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 448 512"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>
                                 </a>
                             </td>
@@ -474,7 +478,7 @@
                         ?>
                         <tr id="error">
                             <td>
-                                <a title="Nummer löschen" onclick="return confirm('Nummer <?php echo substr($num, 8); ?> löschen?');" href="<?php echo getURL(); ?>?delblnumber=<?php echo substr($num, 8); ?>&delbl=Remove">
+                                <a title="Nummer löschen" onclick="return confirm('Nummer <?php echo substr($num, 8); ?> löschen?');" href="<?php echo getURL(""); ?>?delblnumber=<?php echo substr($num, 8); ?>&delbl=Remove">
                                     <svg id="del" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 448 512"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>
                                 </a>
                             </td>
