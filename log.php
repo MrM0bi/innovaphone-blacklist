@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Blacklist Admin</title>
+
+    <title>Blacklist Log</title>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
     <link rel="shortcut icon" href="assets/favicon.ico">
@@ -117,24 +117,24 @@
 
     function getURL($file) {
         if (!empty($file)){
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
                 $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;
-            else  
-                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;   
+            else
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;
         }else{
-            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
                 $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
-            else  
-                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);   
+            else
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
         }
-            
+
         return $url;
 }
 
     ?>
 
     <h2>Blacklist Log</h2>
-    
+
     <?php
         echo '<input id="back" class="btn" type="button" onclick="window.location.href=\''.getURL("blacklist.php").'\'" value="Zurück zur Blacklist">';
     ?>
@@ -153,12 +153,12 @@
 
         // Print Table-Header
         echo "<tr><th>Datum</th><th>Aktion</th></tr>";
-        
+
         // Print each Log entry
         foreach($lines as $line){
             $val = explode(";", $line);
             if (!empty($val[0]) and !empty($val[1])){
-                
+
                 $colorfound = false;
                 foreach($GLOBALS["colorcode"] as $rule){
                     if (strpos($val[1], $rule[0]) !== false) {
