@@ -17,6 +17,10 @@
     <?php
         // Config
         $GLOBALS["foldername"] = "numbers";
+        $GLOBALS["logsfolder"] = "logs";
+        $GLOBALS["togglelogactivatemsg"] = "Blacklist wurde aktiviert";
+        $GLOBALS["togglelogdeactivatemsg"] = "Blacklist wurde deaktiviert";
+        $GLOBALS["logsliceinterval"] = 5000;
     ?>
 
     <style>
@@ -128,6 +132,7 @@
             display: flex;
             flex-flow: row wrap;
         }
+        
 
         #reloadbtn, #toggle{
             width: 100%
@@ -135,6 +140,28 @@
 
         #addbltxt, #addbldesc, #addblbtn{
             margin-bottom: 5px;
+        }
+        
+        #tabletitle{
+            width: 100%;
+        }
+
+        #addtitletd{
+            width: 75%;
+        }
+
+        #loglinktd{
+            width: 25%;
+            vertical-align: top;
+        }
+        
+        #loglink{
+            float: right;
+            top: 0px;
+            right: 0px;
+            margin: 0;
+            padding: 0;
+            color: #939393;
         }
 
         #tableinput{
@@ -201,6 +228,34 @@
         $error = delBLnum($_GET['delblnumber']);
     }
 
+    //  Checks if log Files exist
+    if(!file_exists($GLOBALS["logsfolder"])){
+        mkdir($GLOBALS["logsfolder"], 0755);
+    }
+    
+    if(!file_exists($GLOBALS["logsfolder"]."/latest.log")){
+        $disablefile = fopen($GLOBALS["logsfolder"]."/latest.log", "w");
+        fwrite($disablefile, "");
+        fclose($disablefile);
+    }
+
+    // Deletes old Lines from Logfile
+    $readlog = fopen($GLOBALS["logsfolder"]."/latest.log", "r");
+    if ($readlog)
+        $lines = explode("\n", fread($readlog, filesize($GLOBALS["logsfolder"]."/latest.log")));
+    fclose($readlog);
+
+    if(count($lines) > $GLOBALS["logsliceinterval"]){
+        $clearlog = fopen($GLOBALS["logsfolder"]."/latest.log", "w");
+        $lines = array_slice($lines, $GLOBALS["logsliceinterval"]*-1);
+        foreach($lines as $l){
+            if (!empty($l))
+                fwrite($clearlog, $l.PHP_EOL);
+        }
+        fclose($clearlog);
+    }
+
+
     // Toggles the Blacklist
     function toggleBL() {
         if( file_exists("DISABLED") ) {
@@ -209,15 +264,25 @@
 
             if(file_exists("DISABLED")){
                 $error = "[ERROR] Umschalten der blacklist fehlgeschlagen.";
+            }else{
+                // Log the Blacklist disable event
+                $togglelog = fopen($GLOBALS["logsfolder"]."/latest.log", "a");
+                fwrite($togglelog, date("d.m.Y H:i:s").";".$GLOBALS["togglelogactivatemsg"].PHP_EOL);
+                fclose($togglelog);
             }
         } else{
             // Create File
-            $myfile = fopen("DISABLED", "w");
-            fwrite($myfile, "If this file exists the BL is disabled\n");
-            fclose($myfile);
+            $disablefile = fopen("DISABLED", "w");
+            fwrite($disablefile, "If this file exists the BL is disabled\n");
+            fclose($disablefile);
 
             if(!file_exists("DISABLED")){
                 $error = "[ERROR] Umschalten der blacklist fehlgeschlagen.";
+            }else{
+                // Log the Blacklist enable event
+                $togglelog = fopen($GLOBALS["logsfolder"]."/latest.log", "a");
+                fwrite($togglelog, date("d.m.Y H:i:s").";".$GLOBALS["togglelogdeactivatemsg"].PHP_EOL);
+                fclose($togglelog);
             }
         }
 
@@ -244,9 +309,9 @@
                 if(file_exists($GLOBALS["foldername"]."/".$number)){
                     $error = "[Warnung] Diese Nummer ist bereits blockiert. Operation abgebrochen.";
                 }else{
-                    $myfile = fopen($GLOBALS["foldername"]."/".$number, "w");
-                    fwrite($myfile, $description);
-                    fclose($myfile);
+                    $blockednum = fopen($GLOBALS["foldername"]."/".$number, "w");
+                    fwrite($blockednum, $description);
+                    fclose($blockednum);
                 }
             }
         }else{
@@ -280,12 +345,19 @@
         return $error;
     }
 
-    function getURL() {
-        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
-            $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
-        else  
-            $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);   
-        
+    function getURL($file) {
+        if (!empty($file)){
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+                $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;
+            else  
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], "/")+1).$file;   
+        }else{
+            if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')   
+                $url = "https://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);
+            else  
+                $url = "http://".$_SERVER['HTTP_HOST'].substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], ".php")+4);   
+        }
+            
         return $url;
     }
 
@@ -317,7 +389,18 @@
         </tr>
         <tr>
             <td colspan="2">
-                <h3>Zur Blacklist hinzufügen</h3>
+                <table id="tabletitle">
+                    <tr>
+                        <td id="addtitletd">
+                            <h3>Zur Blacklist hinzufügen</h3>
+                        </td>
+                        <td id="loglinktd">
+                            <?php
+                                echo '<a id="loglink" href="'.getURL("log.php").'">Log anzeigen</a>';
+                            ?>
+                        </td>
+                    </tr>
+                </table>
                 <form method="get">
                     <div id="container" class="parent">
                         <input id="addbltxt" class="txt" type="text" name="newblnumber" placeholder="Nummer"/>
