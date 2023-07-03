@@ -260,6 +260,7 @@
     // Toggles the Blacklist
     function toggleBL() {
         $error = "";
+        
         if( file_exists("DISABLED") ) {
             // Delete File
             $deletefile = unlink("DISABLED");
@@ -293,7 +294,8 @@
 
 
     function newBLnum($number, $description) {
-
+        $error = "";        
+        
         // Remove Spaces first
         $number = preg_replace('/\s+/', '', $number);
         $description = trim($description);
@@ -325,7 +327,6 @@
 
 
     function delBLnum($number) {
-
         $error = "";
 
         // Remove Spaces first
